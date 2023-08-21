@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "spring.security.oauth2.client.accessTokenValiditySeconds",
+      "type": "java.lang.String",
+      "description": "Thời gian access token hoạt động."
+    },
+    {
+      "name": "spring.security.oauth2.client.refreshTokenValiditySeconds",
+      "type": "java.lang.String",
+      "description": "Thời gian refresh token hoạt động."
+    }
+  ] }

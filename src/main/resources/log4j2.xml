@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="CLR">{FATAL=bright red, ERROR=red, WARN=bright yellow, INFO=Normal, DEBUG=white, TRACE=black}
+        </Property>
+        <Property name="LOG_PATTERN_HIGHLIGHT">
+            %highlight{%d{yyMMdd HH:mm:ss.SSS}}${CLR} [%-5p] %clr{${sys:PID}}{magenta}%clr{
+            }{faint}%clr{[%15.15t]}{faint} %clr{%-40.40c{1.}}{cyan} %highlight{: %m [%M(%F:%L)]%n%xwEx}${CLR}
+        </Property>
+        <Property name="LOG_PATTERN">
+            %d{yyyyMMdd HH:mm:ss.SSS} [%-5p] sys:PID [%15.15t] %-40.40c{1.}: %m [%M(%F:%L)]%n%xwEx
+        </Property>
+    </Properties>
+    <Appenders>
+        <!--<Kafka name="kafkaAppender" topic="mini-app-center-logging">
+            <JsonLayout pattern="${LOG_PATTERN}"/>
+            <Property name="bootstrap.servers">10.144.13.152:9092</Property>
+        </Kafka>-->
+        <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN_HIGHLIGHT}"/>
+        </Console>
+        <RollingFile name="RollingByDayAppender"
+                     fileName="${sys:LOG_DIR:-logs}/vsafe-admin.log"
+                     filePattern="${sys:LOG_DIR:-logs}/vsafe-admin.%d{yyyyMMdd}.%i.log.gz"
+                     ignoreExceptions="false">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <!--                <OnStartupTriggeringPolicy />-->
+                <SizeBasedTriggeringPolicy size="2048 MB"/>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${sys:LOG_DIR:-logs}" maxDepth="2">
+                    <IfFileName glob="*/vsafe-admin.*.log.gz"/>
+                    <IfLastModified age="P30D"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <!--<AppenderRef ref="kafkaAppender"/>-->
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="RollingByDayAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>
